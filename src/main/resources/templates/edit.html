@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit user</title>
+</head>
+<body>
+  <h3>Edit user</h3>
+  <form action="/users/edit" method="post">
+    <input type="hidden" id="id" name="id" th:value="${user.id}" />
+    <p>Name: <input type="text" id="name" name="name" th:value="${user.name}" /></p>
+    <p>Last Name: <input type="text" id="lastName" name="lastName" th:value="${user.lastName}" /></p>
+    <p>Age: <input type="text" id="age" name="age" th:value="${user.age}" /></p>
+    <p>Password: <input type="text" id="password" name="password" th:value="''" /></p>
+    <p>
+      <label for="role">Role: </label>
+      <select id="role" th:name="role">
+        <option th:each="roleValue : ${T(com.example.project.model.UserAuthority$Role).values()}"
+                th:value="${roleValue}"
+                th:text="${roleValue}"
+                th:selected="${roleValue==roleValue.valueOf(user.authorities.iterator().next().authority)}">
+        </option>
+      </select>
+    </p>
+    <p><input type="submit" value="EDIT" /></p>
+  </form>
+</body>
+</html>
