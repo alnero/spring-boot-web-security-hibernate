@@ -6,7 +6,7 @@
 </head>
 <body>
   <h3>Edit user</h3>
-  <form action="/users/edit" method="post">
+  <form action="/admin/users/edit" method="post">
     <input type="hidden" id="id" name="id" th:value="${user.id}" />
     <p>Name: <input type="text" id="name" name="name" th:value="${user.name}" /></p>
     <p>Last Name: <input type="text" id="lastName" name="lastName" th:value="${user.lastName}" /></p>

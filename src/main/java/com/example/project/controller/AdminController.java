@@ -5,7 +5,6 @@ import com.example.project.model.Role;
 import com.example.project.service.RoleService;
 import com.example.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
@@ -15,75 +14,55 @@ import java.util.List;
 import java.util.Set;
 
 @Controller
-@RequestMapping("/users")
-public class UsersController {
+@RequestMapping("/admin")
+public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
 
     @Autowired
-    public UsersController(UserService userService, RoleService roleService) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
 
-    @GetMapping()
+    @GetMapping("/users")
     public String listUsers(ModelMap model) {
         List<User> users = userService.listUsers();
         model.addAttribute("users", users);
         return "users";
     }
 
-    @GetMapping("/{id}")
-    public String showUser(@PathVariable Long id, ModelMap model, Authentication authentication) {
-        User authenticatedUser = (User) authentication.getPrincipal();
-        Long authenticatedUserId = authenticatedUser.getId();
-        String authenticatedUserRole = authenticatedUser.getAuthorities().iterator().next().getAuthority();
-        // admin has access to any user page
-        if (Role.AvailableRoles.ADMIN.name().equals(authenticatedUserRole) && !id.equals(authenticatedUserId)) {
-            User user = userService.getById(id);
-            model.addAttribute("user", user);
-            return "user";
-        }
-        // user has access only to his own page and re-directed to his own page when trying to access pages of other users
-        if (id.equals(authenticatedUserId)) {
-            model.addAttribute("user", authenticatedUser);
-            return "user";
-        } else {
-            return "redirect:/users/" + authenticatedUserId;
-        }
-    }
-
-    @GetMapping("/add")
+    @GetMapping("/users/add")
     public String addPage(@ModelAttribute User user) {
         return "add";
     }
 
-    @PostMapping("/add")
+    @PostMapping("/users/add")
     public String add(@ModelAttribute User user, @Validated String chosenRole) {
         Set<Role> roles = roleService.getByName(chosenRole);
         user.setRoles(roles);
         userService.add(user);
-        return "redirect:/users";
+        return "redirect:/admin/users";
     }
 
-    @GetMapping("/edit")
+    @GetMapping("/users/edit")
     public String editPage(@RequestParam long id, ModelMap model) {
         User user = userService.getById(id);
         model.addAttribute("user", user);
         return "edit";
     }
 
-    @PostMapping("/edit")
+    @PostMapping("/users/edit")
     public String edit(@ModelAttribute User user, @Validated String chosenRole) {
         Set<Role> roles = roleService.getByName(chosenRole);
         user.setRoles(roles);
         userService.edit(user);
-        return "redirect:/users";
+        return "redirect:/admin/users";
     }
 
-    @GetMapping("/delete")
+    @GetMapping("/users/delete")
     public String delete(@RequestParam long id) {
         userService.delete(userService.getById(id));
-        return "redirect:/users";
+        return "redirect:/admin/users";
     }
 }

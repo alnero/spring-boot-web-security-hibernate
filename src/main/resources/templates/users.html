@@ -24,12 +24,12 @@
       <td th:text="${user.password}"></td>
       <td th:text="${user.authorities.iterator().next().authority}"></td>
       <td>
-        <a th:href="@{/users/edit(id=${user.id})}">Edit</a>
-        <a th:href="@{/users/delete(id=${user.id})}">Delete</a>
+        <a th:href="@{/admin/users/edit(id=${user.id})}">Edit</a>
+        <a th:href="@{/admin/users/delete(id=${user.id})}">Delete</a>
       </td>
     </tr>
   </table>
-  <p><a th:href="@{/users/add}">Add user</a></p>
+  <p><a th:href="@{/admin/users/add}">Add user</a></p>
   <p><a th:href="@{/logout}">Logout</a></p>
 </body>
 </html>

@@ -6,7 +6,7 @@
 </head>
 <body>
   <h3>Add user</h3>
-  <form action="#" th:action="@{/users/add}" th:object="${user}" method="post">
+  <form action="#" th:action="@{/admin/users/add}" th:object="${user}" method="post">
     <p>Name: <input type="text" th:field="*{name}" /></p>
     <p>Last Name: <input type="text" th:field="*{lastName}" /></p>
     <p>Age: <input type="text" th:field="*{age}" /></p>
