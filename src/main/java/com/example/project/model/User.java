@@ -27,7 +27,7 @@ public class User implements UserDetails {
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<UserAuthority> userAuthorities;
+    private Set<Role> roles;
 
     public User() {
 
@@ -80,11 +80,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public void setUserAuthority(UserAuthority userAuthority) {
-        if (userAuthorities == null) {
-            userAuthorities = new HashSet<>();
+    public void setRole(Role role) {
+        if (roles == null) {
+            roles = new HashSet<>();
         }
-        userAuthorities.add(userAuthority);
+        roles.add(role);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return userAuthorities;
+        return roles;
     }
 
     @Override
@@ -124,7 +124,7 @@ public class User implements UserDetails {
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +
-                ", userAuthorities=" + userAuthorities +
+                ", userRoles=" + roles +
                 '}';
     }
 }

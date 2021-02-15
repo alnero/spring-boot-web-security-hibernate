@@ -1,8 +1,8 @@
 package com.example.project.controller;
 
 import com.example.project.model.User;
-import com.example.project.model.UserAuthority;
-import com.example.project.service.UserAuthorityService;
+import com.example.project.model.Role;
+import com.example.project.service.RoleService;
 import com.example.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UsersController {
     private final UserService userService;
-    private final UserAuthorityService userAuthorityService;
+    private final RoleService roleService;
 
     @Autowired
-    public UsersController(UserService userService, UserAuthorityService userAuthorityService) {
+    public UsersController(UserService userService, RoleService roleService) {
         this.userService = userService;
-        this.userAuthorityService = userAuthorityService;
+        this.roleService = roleService;
     }
 
     @GetMapping()
@@ -34,9 +34,9 @@ public class UsersController {
     public String showUser(@PathVariable Long id, ModelMap model, Authentication authentication) {
         User authenticatedUser = (User) authentication.getPrincipal();
         Long authenticatedUserId = authenticatedUser.getId();
-        String authenticatedUserAuthority = authenticatedUser.getAuthorities().iterator().next().getAuthority();
+        String authenticatedUserRole = authenticatedUser.getAuthorities().iterator().next().getAuthority();
         // admin has access to any user page
-        if (UserAuthority.Role.ADMIN.name().equals(authenticatedUserAuthority) && !id.equals(authenticatedUserId)) {
+        if (Role.AvailableRoles.ADMIN.name().equals(authenticatedUserRole) && !id.equals(authenticatedUserId)) {
             User user = userService.getById(id).get();
             model.addAttribute("user", user);
             return "user";
@@ -56,9 +56,9 @@ public class UsersController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute User user, @Validated String role) {
-        UserAuthority userAuthority = userAuthorityService.getUserAuthorityByName(role);
-        user.setUserAuthority(userAuthority);
+    public String add(@ModelAttribute User user, @Validated String chosenRole) {
+        Role role = roleService.getByName(chosenRole);
+        user.setRole(role);
         userService.add(user);
         return "redirect:/users";
     }
@@ -71,9 +71,9 @@ public class UsersController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute User user, @Validated String role) {
-        UserAuthority userAuthority = userAuthorityService.getUserAuthorityByName(role);
-        user.setUserAuthority(userAuthority);
+    public String edit(@ModelAttribute User user, @Validated String chosenRole) {
+        Role role = roleService.getByName(chosenRole);
+        user.setRole(role);
         userService.edit(user);
         return "redirect:/users";
     }

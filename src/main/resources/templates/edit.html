@@ -14,8 +14,8 @@
     <p>Password: <input type="text" id="password" name="password" th:value="''" /></p>
     <p>
       <label for="role">Role: </label>
-      <select id="role" th:name="role">
-        <option th:each="roleValue : ${T(com.example.project.model.UserAuthority$Role).values()}"
+      <select id="role" th:name="chosenRole">
+        <option th:each="roleValue : ${T(com.example.project.model.Role$AvailableRoles).values()}"
                 th:value="${roleValue}"
                 th:text="${roleValue}"
                 th:selected="${roleValue==roleValue.valueOf(user.authorities.iterator().next().authority)}">
