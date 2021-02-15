@@ -33,7 +33,7 @@ public class DbInit {
                 "admin",
                 (byte) 1);
         admin.setPassword("admin");
-        admin.setRole(roleService.getByName(Role.AvailableRoles.ADMIN.name()));
+        admin.setRoles(roleService.getByName(Role.AvailableRoles.ADMIN.name()));
         userService.add(admin);
     }
 }

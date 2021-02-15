@@ -11,6 +11,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Set;
+
 @Controller
 @RequestMapping("/users")
 public class UsersController {
@@ -25,7 +28,7 @@ public class UsersController {
 
     @GetMapping()
     public String listUsers(ModelMap model) {
-        Iterable<User> users = userService.listUsers();
+        List<User> users = userService.listUsers();
         model.addAttribute("users", users);
         return "users";
     }
@@ -37,7 +40,7 @@ public class UsersController {
         String authenticatedUserRole = authenticatedUser.getAuthorities().iterator().next().getAuthority();
         // admin has access to any user page
         if (Role.AvailableRoles.ADMIN.name().equals(authenticatedUserRole) && !id.equals(authenticatedUserId)) {
-            User user = userService.getById(id).get();
+            User user = userService.getById(id);
             model.addAttribute("user", user);
             return "user";
         }
@@ -57,30 +60,30 @@ public class UsersController {
 
     @PostMapping("/add")
     public String add(@ModelAttribute User user, @Validated String chosenRole) {
-        Role role = roleService.getByName(chosenRole);
-        user.setRole(role);
+        Set<Role> roles = roleService.getByName(chosenRole);
+        user.setRoles(roles);
         userService.add(user);
         return "redirect:/users";
     }
 
     @GetMapping("/edit")
     public String editPage(@RequestParam long id, ModelMap model) {
-        User user = userService.getById(id).get();
+        User user = userService.getById(id);
         model.addAttribute("user", user);
         return "edit";
     }
 
     @PostMapping("/edit")
     public String edit(@ModelAttribute User user, @Validated String chosenRole) {
-        Role role = roleService.getByName(chosenRole);
-        user.setRole(role);
+        Set<Role> roles = roleService.getByName(chosenRole);
+        user.setRoles(roles);
         userService.edit(user);
         return "redirect:/users";
     }
 
     @GetMapping("/delete")
     public String delete(@RequestParam long id) {
-        userService.delete(userService.getById(id).get());
+        userService.delete(userService.getById(id));
         return "redirect:/users";
     }
 }

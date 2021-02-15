@@ -7,7 +7,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -22,13 +23,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Iterable<User> listUsers() {
-        return userRepository.findAll();
+    public List<User> listUsers() {
+        List<User> result = new ArrayList<>();
+        userRepository.findAll().forEach(result::add);
+        return result;
     }
 
     @Override
-    public Optional<User> getById(long id) {
-        return userRepository.findById(id);
+    public User getById(long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("User not found with id: " + id));
+        return user;
     }
 
     @Override
